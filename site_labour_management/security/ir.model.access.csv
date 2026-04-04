@@ -12,3 +12,9 @@ access_site_labour_wage_slip_billing,site.labour.wage.slip billing,model_site_la
 access_site_labour_daily_wage_supervisor,site.labour.daily.wage.slip supervisor,model_site_labour_daily_wage_slip,site_labour_management.group_site_labour_supervisor,1,1,1,0
 access_site_labour_daily_wage_billing,site.labour.daily.wage.slip billing,model_site_labour_daily_wage_slip,site_labour_management.group_site_labour_billing,1,1,1,1
 access_site_labour_wage_payment_billing,site.labour.wage.payment billing,model_site_labour_wage_payment,site_labour_management.group_site_labour_billing,1,1,1,1
+access_site_labour_sheet_user,site.labour.sheet user,model_site_labour_sheet,base.group_user,1,1,1,0
+access_site_labour_category_user,site.labour.category user,model_site_labour_category,base.group_user,1,0,0,0
+access_site_labour_daily_wage_user,site.labour.daily.wage.slip user,model_site_labour_daily_wage_slip,base.group_user,1,1,1,0
+access_site_labour_wage_payment_user,site.labour.wage.payment user,model_site_labour_wage_payment,base.group_user,1,1,1,0
+access_site_labour_weekly_bill_user,site.labour.weekly.bill user,model_site_labour_weekly_bill,base.group_user,1,1,1,0
+access_site_labour_wage_slip_user,site.labour.wage.slip user,model_site_labour_wage_slip,base.group_user,1,1,1,0
