@@ -1,0 +1,24 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_site_labour_category_supervisor,site.labour.category supervisor,model_site_labour_category,site_labour_management.group_site_labour_supervisor,1,0,0,0
+access_site_labour_category_admin,site.labour.category admin,model_site_labour_category,site_labour_management.group_site_labour_admin,1,1,1,1
+access_site_labour_photo_supervisor,site.labour.photo supervisor,model_site_labour_photo,site_labour_management.group_site_labour_supervisor,1,1,1,1
+access_site_labour_sheet_supervisor,site.labour.sheet supervisor,model_site_labour_sheet,site_labour_management.group_site_labour_supervisor,1,1,1,0
+access_site_labour_sheet_admin,site.labour.sheet admin,model_site_labour_sheet,site_labour_management.group_site_labour_admin,1,1,1,1
+access_site_labour_line_supervisor,site.labour.line supervisor,model_site_labour_line,site_labour_management.group_site_labour_supervisor,1,1,1,1
+access_site_labour_weekly_bill_billing,site.labour.weekly.bill billing,model_site_labour_weekly_bill,site_labour_management.group_site_labour_billing,1,1,1,1
+access_site_labour_weekly_bill_line_billing,site.labour.weekly.bill.line billing,model_site_labour_weekly_bill_line,site_labour_management.group_site_labour_billing,1,1,1,1
+access_site_labour_wage_slip_billing,site.labour.wage.slip billing,model_site_labour_wage_slip,site_labour_management.group_site_labour_billing,1,1,1,1
+access_site_labour_daily_wage_supervisor,site.labour.daily.wage.slip supervisor,model_site_labour_daily_wage_slip,site_labour_management.group_site_labour_supervisor,1,1,1,0
+access_site_labour_daily_wage_billing,site.labour.daily.wage.slip billing,model_site_labour_daily_wage_slip,site_labour_management.group_site_labour_billing,1,1,1,1
+access_site_labour_payment_billing,site.labour.payment billing,model_site_labour_payment,site_labour_management.group_site_labour_billing,1,1,1,1
+access_site_labour_payment_line_billing,site.labour.payment.line billing,model_site_labour_payment_line,site_labour_management.group_site_labour_billing,1,1,1,1
+access_site_labour_daily_bill_billing,site.labour.daily.bill billing,model_site_labour_daily_bill,site_labour_management.group_site_labour_billing,1,1,1,1
+access_site_labour_daily_bill_line_billing,site.labour.daily.bill.line billing,model_site_labour_daily_bill_line,site_labour_management.group_site_labour_billing,1,1,1,1
+access_site_labour_sheet_user,site.labour.sheet user,model_site_labour_sheet,base.group_user,1,1,1,0
+access_site_labour_line_user,site.labour.line user,model_site_labour_line,base.group_user,1,1,1,0
+access_site_labour_category_user,site.labour.category user,model_site_labour_category,base.group_user,1,1,1,1
+access_site_labour_daily_wage_user,site.labour.daily.wage.slip user,model_site_labour_daily_wage_slip,base.group_user,1,1,1,0
+access_site_labour_payment_user,site.labour.payment user,model_site_labour_payment,base.group_user,1,1,1,0
+access_site_labour_payment_line_user,site.labour.payment.line user,model_site_labour_payment_line,base.group_user,1,1,1,0
+access_site_labour_weekly_bill_user,site.labour.weekly.bill user,model_site_labour_weekly_bill,base.group_user,1,1,1,0
+access_site_labour_wage_slip_user,site.labour.wage.slip user,model_site_labour_wage_slip,base.group_user,1,1,1,0
