@@ -52,7 +52,7 @@
     <record id="action_site_labour_weekly_bill" model="ir.actions.act_window">
         <field name="name">Weekly Bills</field>
         <field name="res_model">site.labour.weekly.bill</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <menuitem id="menu_site_labour_billing" name="Billing" parent="menu_site_labour_root" sequence="20"/>

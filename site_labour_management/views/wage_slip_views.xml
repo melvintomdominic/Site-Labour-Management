@@ -36,7 +36,7 @@
     <record id="action_site_labour_wage_slip" model="ir.actions.act_window">
         <field name="name">Wage Slips</field>
         <field name="res_model">site.labour.wage.slip</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <menuitem id="menu_site_labour_wage_slip" name="Wage Slips" parent="menu_site_labour_billing" action="action_site_labour_wage_slip"/>

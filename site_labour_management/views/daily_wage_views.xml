@@ -3,18 +3,17 @@
         <field name="name">site.labour.daily.wage.slip.search</field>
         <field name="model">site.labour.daily.wage.slip</field>
         <field name="arch" type="xml">
-            <search>
+            <search string="Search Daily Wage Slips">
                 <field name="work_date"/>
                 <field name="project_id"/>
                 <field name="work_type"/>
                 <field name="labour_group"/>
                 <field name="labour_id"/>
-                <filter string="Today" name="today" domain="[('work_date','=', context_today())]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Project" context="{'group_by': 'project_id'}"/>
-                    <filter string="Labour" context="{'group_by': 'labour_id'}"/>
-                    <filter string="Work Type" context="{'group_by': 'work_type'}"/>
-                </group>
+                <filter name="filter_today" string="Today" domain="[('work_date','=', context_today())]"/>
+                <separator/>
+                <filter name="group_project" string="Project" context="{'group_by': 'project_id'}"/>
+                <filter name="group_labour" string="Labour" context="{'group_by': 'labour_id'}"/>
+                <filter name="group_work_type" string="Work Type" context="{'group_by': 'work_type'}"/>
             </search>
         </field>
     </record>
@@ -146,13 +145,14 @@
     <record id="action_site_labour_daily_wage" model="ir.actions.act_window">
         <field name="name">Daily Wage Slips &amp; Payments</field>
         <field name="res_model">site.labour.daily.wage.slip</field>
-        <field name="view_mode">tree,form,pivot</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_site_labour_daily_wage_slip_search"/>
     </record>
 
     <record id="action_site_labour_wage_payment" model="ir.actions.act_window">
         <field name="name">Labour Wage Payments</field>
         <field name="res_model">site.labour.wage.payment</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <menuitem id="menu_site_labour_daily_wage" name="Daily Wage Slips &amp; Payments" parent="menu_site_labour_root" action="action_site_labour_daily_wage" sequence="15"/>

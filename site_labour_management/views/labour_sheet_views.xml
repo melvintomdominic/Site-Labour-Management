@@ -111,7 +111,7 @@
     <record id="action_site_labour_sheet" model="ir.actions.act_window">
         <field name="name">Labour Sheets</field>
         <field name="res_model">site.labour.sheet</field>
-        <field name="view_mode">tree,form,graph,pivot</field>
+        <field name="view_mode">list,form,graph,pivot</field>
     </record>
 
     <menuitem id="menu_site_labour_root" name="Site Labour" sequence="10"/>

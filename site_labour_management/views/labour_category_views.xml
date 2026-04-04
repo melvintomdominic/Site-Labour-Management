@@ -32,6 +32,6 @@
     <record id="action_site_labour_category" model="ir.actions.act_window">
         <field name="name">Labour Categories</field>
         <field name="res_model">site.labour.category</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 </odoo>
