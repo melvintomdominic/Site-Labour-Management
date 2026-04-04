@@ -13,6 +13,7 @@
         "views/labour_sheet_views.xml",
         "views/weekly_bill_views.xml",
         "views/wage_slip_views.xml",
+        "views/daily_wage_views.xml",
         "views/res_config_settings_views.xml",
         "views/dashboard_views.xml",
         "data/cron_jobs.xml"

@@ -19,4 +19,20 @@
         <field name="prefix">SLWS/%(year)s/</field>
         <field name="padding">4</field>
     </record>
+
+
+    <record id="seq_site_labour_daily_wage_slip" model="ir.sequence">
+        <field name="name">Site Labour Daily Wage Slip</field>
+        <field name="code">site.labour.daily.wage.slip</field>
+        <field name="prefix">SLDS/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+
+    <record id="seq_site_labour_wage_payment" model="ir.sequence">
+        <field name="name">Site Labour Wage Payment</field>
+        <field name="code">site.labour.wage.payment</field>
+        <field name="prefix">SLWP/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+
 </odoo>

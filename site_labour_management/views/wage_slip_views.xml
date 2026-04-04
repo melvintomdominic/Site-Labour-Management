@@ -3,13 +3,13 @@
         <field name="name">site.labour.wage.slip.tree</field>
         <field name="model">site.labour.wage.slip</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="date_from"/>
                 <field name="date_to"/>
                 <field name="total_amount"/>
-            </tree>
+            </list>
         </field>
     </record>
 

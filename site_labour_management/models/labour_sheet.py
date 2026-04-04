@@ -1,5 +1,4 @@
 import base64
-from datetime import datetime
 from urllib import parse, request
 
 from odoo import api, fields, models
@@ -9,7 +8,6 @@ from odoo.exceptions import UserError, ValidationError
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
-    mobile = fields.Char()
 
     def _slm_send_whatsapp(self, message):
         param = self.env["ir.config_parameter"].sudo()
@@ -65,6 +63,13 @@ class SiteLabourSheet(models.Model):
         default="pending",
         tracking=True,
     )
+    billing_frequency = fields.Selection(
+        [("daily", "Daily"), ("weekly", "Weekly"), ("monthly", "Monthly")],
+        default=lambda self: self.env["ir.config_parameter"].sudo().get_param(
+            "site_labour_management.billing_frequency", "weekly"
+        ),
+        required=True,
+    )
 
     _sql_constraints = [
         (
@@ -112,6 +117,7 @@ class SiteLabourSheet(models.Model):
                 raise UserError("Only submitted sheets can be approved.")
             rec._check_for_approval()
             rec._push_to_weekly_bills(weekly_model)
+            rec._create_daily_wage_slips()
             rec.state = "approved"
             rec.supervisor_id.partner_id._slm_send_whatsapp(
                 f"Labour sheet {rec.name} has been approved for {rec.total_amount:.2f}."
@@ -133,7 +139,7 @@ class SiteLabourSheet(models.Model):
             partner_map[line.labour_id] += line.total
 
         for partner, amount in partner_map.items():
-            bill = weekly_model.get_or_create_for(partner, self.date)
+            bill = weekly_model.get_or_create_for(partner, self.date, self.billing_frequency or "weekly")
             if self not in bill.sheet_ids:
                 bill.sheet_ids = [(4, self.id)]
             existing = bill.line_ids.filtered(lambda l: l.source == self.name)

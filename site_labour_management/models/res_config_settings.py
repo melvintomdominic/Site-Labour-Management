@@ -18,3 +18,10 @@ class ResConfigSettings(models.TransientModel):
     twilio_sid = fields.Char(config_parameter="site_labour_management.twilio_sid")
     twilio_token = fields.Char(config_parameter="site_labour_management.twilio_token")
     twilio_from_number = fields.Char(config_parameter="site_labour_management.twilio_from_number")
+
+    billing_frequency = fields.Selection(
+        [("daily", "Daily"), ("weekly", "Weekly"), ("monthly", "Monthly")],
+        string="Vendor Bill Posting Frequency",
+        default="weekly",
+        config_parameter="site_labour_management.billing_frequency",
+    )

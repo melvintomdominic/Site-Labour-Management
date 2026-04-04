@@ -1,4 +1,5 @@
 from datetime import timedelta
+import calendar
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
@@ -13,6 +14,11 @@ class SiteLabourWeeklyBill(models.Model):
     partner_id = fields.Many2one("res.partner", required=True)
     week_start = fields.Date(required=True)
     week_end = fields.Date(required=True)
+    billing_frequency = fields.Selection(
+        [("daily", "Daily"), ("weekly", "Weekly"), ("monthly", "Monthly")],
+        required=True,
+        default="weekly",
+    )
     sheet_ids = fields.Many2many("site.labour.sheet", string="Labour Sheets")
     line_ids = fields.One2many("site.labour.weekly.bill.line", "weekly_bill_id")
     amount_total = fields.Monetary(compute="_compute_amount_total", store=True)
@@ -27,8 +33,8 @@ class SiteLabourWeeklyBill(models.Model):
     _sql_constraints = [
         (
             "partner_week_unique",
-            "unique(partner_id, week_start, week_end)",
-            "A weekly consolidated bill already exists for this partner and week.",
+            "unique(partner_id, week_start, week_end, billing_frequency)",
+            "A consolidated bill already exists for this partner and period/frequency.",
         )
     ]
 
@@ -38,20 +44,27 @@ class SiteLabourWeeklyBill(models.Model):
             rec.amount_total = sum(rec.line_ids.mapped("amount"))
 
     @api.model
-    def week_bounds(self, day):
+    def period_bounds(self, day, frequency):
         day = fields.Date.to_date(day)
-        week_start = day - timedelta(days=day.weekday())
-        week_end = week_start + timedelta(days=6)
-        return week_start, week_end
+        if frequency == "daily":
+            return day, day
+        if frequency == "monthly":
+            start = day.replace(day=1)
+            end = day.replace(day=calendar.monthrange(day.year, day.month)[1])
+            return start, end
+        period_start = day - timedelta(days=day.weekday())
+        period_end = period_start + timedelta(days=6)
+        return period_start, period_end
 
     @api.model
-    def get_or_create_for(self, partner, day):
-        week_start, week_end = self.week_bounds(day)
+    def get_or_create_for(self, partner, day, frequency="weekly"):
+        week_start, week_end = self.period_bounds(day, frequency)
         bill = self.search(
             [
                 ("partner_id", "=", partner.id),
                 ("week_start", "=", week_start),
                 ("week_end", "=", week_end),
+                ("billing_frequency", "=", frequency),
             ],
             limit=1,
         )
@@ -61,6 +74,7 @@ class SiteLabourWeeklyBill(models.Model):
                     "partner_id": partner.id,
                     "week_start": week_start,
                     "week_end": week_end,
+                    "billing_frequency": frequency,
                 }
             )
         return bill

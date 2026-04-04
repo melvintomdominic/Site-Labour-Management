@@ -3,7 +3,7 @@
         <field name="name">site.labour.sheet.tree</field>
         <field name="model">site.labour.sheet</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
                 <field name="date"/>
                 <field name="project_id"/>
@@ -11,7 +11,7 @@
                 <field name="total_amount"/>
                 <field name="state"/>
                 <field name="billing_status"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -39,6 +39,7 @@
                             <field name="latitude"/>
                             <field name="longitude"/>
                             <field name="billing_status" readonly="1"/>
+                            <field name="billing_frequency"/>
                             <field name="total_amount" readonly="1"/>
                         </group>
                     </group>
@@ -46,7 +47,7 @@
                     <notebook>
                         <page string="Team Labour">
                             <field name="team_line_ids">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="team_leader_id"/>
                                     <field name="category_id"/>
                                     <field name="labour_count"/>
@@ -54,28 +55,28 @@
                                     <field name="worked_hours"/>
                                     <field name="ot_hours" readonly="1"/>
                                     <field name="total" readonly="1"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Individual Labour">
                             <field name="individual_line_ids">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="labour_id"/>
                                     <field name="category_id"/>
                                     <field name="wage"/>
                                     <field name="worked_hours"/>
                                     <field name="ot_hours" readonly="1"/>
                                     <field name="total" readonly="1"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Photos">
                             <field name="photo_ids">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="name"/>
                                     <field name="image_type"/>
                                     <field name="image" widget="image"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>

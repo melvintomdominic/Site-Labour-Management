@@ -7,12 +7,13 @@ Production-focused Odoo 18 module for site labour operations, project costing, a
 - GPS + photo proof validation before submission.
 - Team and individual labour entries with OT auto-calculation.
 - Approval workflow (`draft -> submitted -> approved`).
-- Weekly consolidated vendor billing (one bill per partner/week).
+- Consolidated vendor billing with configurable posting frequency (daily/weekly/monthly).
 - Vendor bill generation into Odoo accounting (`in_invoice`).
 - Wage slip records from weekly bills or selected sheets.
 - WhatsApp notifications via Twilio on approval/billing/reminders.
 - Daily missing-entry and overdue-payment cron reminders.
 - Dashboard-ready graph + pivot views for cost analysis.
+- Daily wage slips and payment register with labour summary pivot.
 
 ## Module path
 `site_labour_management`

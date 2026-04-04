@@ -4,28 +4,27 @@
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref="account.res_config_settings_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//form" position="inside">
-                <app string="Site Labour" name="site_labour_management" groups="site_labour_management.group_site_labour_admin">
-                    <block title="Labour Rules">
-                        <setting string="Labour Expense Account">
-                            <field name="labour_expense_account_id"/>
-                        </setting>
-                        <setting string="OT Trigger Hours">
-                            <field name="default_ot_hours"/>
-                        </setting>
-                    </block>
-                    <block title="WhatsApp Alerts (Twilio)">
-                        <setting string="Twilio SID">
-                            <field name="twilio_sid"/>
-                        </setting>
-                        <setting string="Twilio Token">
-                            <field name="twilio_token" password="True"/>
-                        </setting>
-                        <setting string="Twilio From Number">
-                            <field name="twilio_from_number"/>
-                        </setting>
-                    </block>
-                </app>
+            <xpath expr="//app[@name='account']" position="inside">
+                <block title="Site Labour Management" name="site_labour_block" groups="site_labour_management.group_site_labour_admin">
+                    <setting string="Labour Expense Account">
+                        <field name="labour_expense_account_id"/>
+                    </setting>
+                    <setting string="OT Trigger Hours">
+                        <field name="default_ot_hours"/>
+                    </setting>
+                    <setting string="Vendor Bill Posting Frequency">
+                        <field name="billing_frequency"/>
+                    </setting>
+                    <setting string="Twilio SID">
+                        <field name="twilio_sid"/>
+                    </setting>
+                    <setting string="Twilio Token">
+                        <field name="twilio_token" password="True"/>
+                    </setting>
+                    <setting string="Twilio From Number">
+                        <field name="twilio_from_number"/>
+                    </setting>
+                </block>
             </xpath>
         </field>
     </record>

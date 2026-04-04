@@ -3,12 +3,12 @@
         <field name="name">site.labour.category.tree</field>
         <field name="model">site.labour.category</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
                 <field name="default_wage"/>
                 <field name="ot_rate"/>
                 <field name="active"/>
-            </tree>
+            </list>
         </field>
     </record>
 

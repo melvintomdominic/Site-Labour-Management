@@ -3,15 +3,16 @@
         <field name="name">site.labour.weekly.bill.tree</field>
         <field name="model">site.labour.weekly.bill</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="week_start"/>
                 <field name="week_end"/>
+                <field name="billing_frequency"/>
                 <field name="amount_total"/>
                 <field name="state"/>
                 <field name="move_id"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -30,6 +31,7 @@
                         <field name="partner_id"/>
                         <field name="week_start"/>
                         <field name="week_end"/>
+                        <field name="billing_frequency"/>
                         <field name="move_id" readonly="1"/>
                         <field name="amount_total" readonly="1"/>
                     </group>
@@ -37,10 +39,10 @@
                         <field name="sheet_ids" widget="many2many_tags"/>
                     </group>
                     <field name="line_ids">
-                        <tree editable="bottom">
+                        <list editable="bottom">
                             <field name="source"/>
                             <field name="amount"/>
-                        </tree>
+                        </list>
                     </field>
                 </sheet>
             </form>
