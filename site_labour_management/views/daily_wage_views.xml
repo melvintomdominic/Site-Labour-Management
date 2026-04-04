@@ -109,16 +109,10 @@
                 <field name="tr_id" string="TR ID"/>
                 <field name="state"/>
                 <field name="paid_date"/>
-                <field name="labour_id" string="Labour Name"/>
-                <field name="employee_id"/>
-                <field name="work_type"/>
-                <field name="paid_amount"/>
-                <field name="analytic_account_id"/>
-                <field name="debit_account_id" string="Debit Acc"/>
+                <field name="total_amount"/>
                 <field name="journal_id"/>
-                <field name="payment_mode"/>
-                <field name="tr_ref_no"/>
-                <field name="tr_ref_date"/>
+                <field name="payment_method_line_id"/>
+                <field name="payment_id"/>
                 <field name="remarks"/>
                 <field name="create_uid" string="Created By"/>
                 <field name="create_date" string="Created Date"/>
@@ -139,21 +133,19 @@
                     <group>
                         <field name="tr_id" readonly="1"/>
                         <field name="paid_date"/>
-                        <field name="labour_id"/>
-                        <field name="employee_id"/>
-                        <field name="work_type"/>
-                        <field name="slip_id"/>
-                        <field name="paid_amount"/>
-                        <field name="expense_account_id"/>
-                        <field name="debit_account_id"/>
-                        <field name="analytic_account_id"/>
                         <field name="journal_id"/>
-                        <field name="payment_mode"/>
-                        <field name="tr_ref_no"/>
-                        <field name="tr_ref_date"/>
-                        <field name="move_id" readonly="1"/>
+                        <field name="payment_method_line_id"/>
+                        <field name="total_amount" readonly="1"/>
+                        <field name="payment_id" readonly="1"/>
                         <field name="remarks"/>
                     </group>
+                    <field name="wage_line_ids">
+                        <list editable="bottom">
+                            <field name="labour_id"/>
+                            <field name="amount"/>
+                            <field name="analytic_account_id"/>
+                        </list>
+                    </field>
                 </sheet>
             </form>
         </field>

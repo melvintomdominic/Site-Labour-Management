@@ -34,3 +34,7 @@ access_site_labour_daily_bill_line_admin,site.labour.daily.bill.line admin,model
 access_site_labour_daily_bill_line_system,site.labour.daily.bill.line system,model_site_labour_daily_bill_line,base.group_system,1,1,1,1
 access_labour_category,access.labour.category,model_site_labour_category,base.group_user,1,1,1,1
 access_labour_category_admin,access.labour.category.admin,model_site_labour_category,base.group_system,1,1,1,1
+access_site_labour_wage_payment_line_user,site.labour.wage.payment.line user,model_site_labour_wage_payment_line,base.group_user,1,1,1,0
+access_site_labour_wage_payment_line_billing,site.labour.wage.payment.line billing,model_site_labour_wage_payment_line,site_labour_management.group_site_labour_billing,1,1,1,1
+access_site_labour_wage_payment_line_admin,site.labour.wage.payment.line admin,model_site_labour_wage_payment_line,site_labour_management.group_site_labour_admin,1,1,1,1
+access_site_labour_wage_payment_line_system,site.labour.wage.payment.line system,model_site_labour_wage_payment_line,base.group_system,1,1,1,1

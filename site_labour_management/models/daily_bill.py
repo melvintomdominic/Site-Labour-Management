@@ -10,7 +10,7 @@ class SiteLabourDailyBill(models.Model):
     name = fields.Char(default="New", readonly=True, copy=False)
     date = fields.Date(required=True, default=fields.Date.context_today)
     project_id = fields.Many2one("project.project", required=True)
-    partner_id = fields.Many2one("res.partner", required=True)
+    partner_id = fields.Many2one("res.partner", required=True, domain=[("is_team_leader", "=", True)])
     labour_sheet_ids = fields.Many2many("site.labour.sheet")
     line_ids = fields.One2many("site.labour.daily.bill.line", "bill_id")
     total_amount = fields.Monetary(compute="_compute_total_amount", store=True)
@@ -48,10 +48,14 @@ class SiteLabourDailyBill(models.Model):
 
     def _populate_lines_from_sheets(self):
         for rec in self:
+            if not rec.partner_id and rec.labour_sheet_ids:
+                rec.partner_id = rec.labour_sheet_ids[:1].team_leader_id
             lines = [(5, 0, 0)]
             for sheet in rec.labour_sheet_ids:
+                if rec.partner_id and sheet.team_leader_id != rec.partner_id:
+                    continue
                 for line in sheet.individual_line_ids:
-                    if rec.partner_id and line.labour_id != rec.partner_id:
+                    if rec.partner_id and line.labour_id.parent_id and line.labour_id.parent_id != rec.partner_id:
                         continue
                     qty = 1
                     rate = line.daily_wage_rate or line.wage

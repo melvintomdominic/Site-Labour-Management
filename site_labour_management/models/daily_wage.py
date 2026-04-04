@@ -88,22 +88,12 @@ class SiteLabourWagePayment(models.Model):
 
     tr_id = fields.Char(default="New", readonly=True, copy=False)
     paid_date = fields.Date(required=True, default=fields.Date.context_today)
-    labour_id = fields.Many2one("res.partner", required=True)
-    employee_id = fields.Many2one("hr.employee")
-    work_type = fields.Many2one("site.labour.category")
-    paid_amount = fields.Monetary(required=True, currency_field="currency_id")
-    debit_account_id = fields.Many2one("account.account")
-    expense_account_id = fields.Many2one("account.account")
-    analytic_account_id = fields.Many2one("account.analytic.account")
-    journal_id = fields.Many2one("account.journal")
-    payment_mode = fields.Selection(
-        [("cash", "Cash"), ("bank", "Bank"), ("upi", "UPI"), ("other", "Other")], default="bank"
-    )
-    tr_ref_no = fields.Char()
-    tr_ref_date = fields.Date()
+    journal_id = fields.Many2one("account.journal", required=True)
+    payment_method_line_id = fields.Many2one("account.payment.method.line")
+    wage_line_ids = fields.One2many("site.labour.wage.payment.line", "payment_id")
+    total_amount = fields.Monetary(compute="_compute_total_amount", store=True, currency_field="currency_id")
     remarks = fields.Char()
-    slip_id = fields.Many2one("site.labour.daily.wage.slip")
-    move_id = fields.Many2one("account.move", readonly=True, copy=False)
+    payment_id = fields.Many2one("account.payment", readonly=True, copy=False)
     state = fields.Selection([("draft", "Draft"), ("posted", "Posted")], default="draft", tracking=True)
     currency_id = fields.Many2one(
         "res.currency", default=lambda self: self.env.company.currency_id.id, required=True
@@ -116,78 +106,62 @@ class SiteLabourWagePayment(models.Model):
                 vals["tr_id"] = self.env["ir.sequence"].next_by_code("site.labour.wage.payment") or "New"
         return super().create(vals_list)
 
-    @api.onchange("slip_id")
-    def _onchange_slip_id(self):
-        if not self.slip_id:
-            return
-        self.labour_id = self.slip_id.labour_id
-        self.employee_id = self.slip_id.employee_id
-        self.paid_amount = self.slip_id.total_wage
-        self.analytic_account_id = self.slip_id.sheet_id.analytic_account_id
+    @api.depends("wage_line_ids.amount")
+    def _compute_total_amount(self):
+        for rec in self:
+            rec.total_amount = sum(rec.wage_line_ids.mapped("amount"))
 
-    @api.onchange("employee_id", "paid_date")
-    def _onchange_employee_id(self):
-        if not self.employee_id:
-            return
-        rate = self.env["site.labour.employee.wage"].get_latest_rate(
-            self.employee_id, self.paid_date or fields.Date.context_today(self)
-        )
-        if rate and not self.paid_amount:
-            self.paid_amount = rate
+    @api.onchange("journal_id")
+    def _onchange_journal_id(self):
+        if self.journal_id and self.journal_id.outbound_payment_method_line_ids:
+            self.payment_method_line_id = self.journal_id.outbound_payment_method_line_ids[0]
 
     def action_confirm_payment(self):
-        param = self.env["ir.config_parameter"].sudo()
-        default_expense_account = int(param.get_param("site_labour_management.expense_account_id", 0))
         for rec in self:
-            expense_account = rec.expense_account_id or self.env["account.account"].browse(default_expense_account)
-            if not expense_account:
-                raise UserError("Configure Labour Expense Account or set Expense Account on payment.")
-            if not rec.debit_account_id:
-                raise UserError("Payment account is required to post wage payment.")
-            if not rec.analytic_account_id:
-                raise UserError("Analytic Account is required to post wage payment.")
-            if rec.employee_id:
-                rate = self.env["site.labour.employee.wage"].get_latest_rate(
-                    rec.employee_id, rec.paid_date or fields.Date.context_today(self)
-                )
-                if not rate:
-                    raise UserError("Wage rate missing for selected employee.")
             if not rec.journal_id:
                 raise UserError("Journal is required to post wage payment.")
-            if rec.move_id:
+            if not rec.wage_line_ids:
+                raise UserError("Add at least one labour payment line.")
+            if rec.total_amount <= 0:
+                raise UserError("Total payment amount must be greater than zero.")
+            if any(not line.analytic_account_id for line in rec.wage_line_ids):
+                raise UserError("All labour payment lines require analytic account.")
+            if rec.payment_id:
                 continue
-
-            line_vals = [
-                (
-                    0,
-                    0,
-                    {
-                        "name": f"Wage Payment {rec.tr_id}",
-                        "account_id": expense_account.id,
-                        "debit": rec.paid_amount,
-                        "credit": 0.0,
-                        "analytic_distribution": {rec.analytic_account_id.id: 100},
-                    },
-                ),
-                (
-                    0,
-                    0,
-                    {
-                        "name": f"Wage Payment {rec.tr_id}",
-                        "account_id": rec.debit_account_id.id,
-                        "debit": 0.0,
-                        "credit": rec.paid_amount,
-                    },
-                ),
-            ]
-            move = self.env["account.move"].create(
+            main_partner = rec.wage_line_ids[:1].labour_id
+            payment_method = rec.payment_method_line_id or rec.journal_id.outbound_payment_method_line_ids[:1]
+            payment = self.env["account.payment"].create(
                 {
-                    "move_type": "entry",
-                    "date": rec.paid_date or fields.Date.context_today(self),
+                    "payment_type": "outbound",
+                    "partner_type": "supplier",
+                    "partner_id": main_partner.id,
+                    "amount": rec.total_amount,
+                    "date": rec.paid_date,
                     "journal_id": rec.journal_id.id,
-                    "line_ids": line_vals,
+                    "payment_method_line_id": payment_method.id if payment_method else False,
                     "ref": rec.tr_id,
                 }
             )
-            move.action_post()
-            rec.write({"move_id": move.id, "state": "posted"})
+            payment.action_post()
+            # attach analytic distribution to non-liquidity lines for cost tracking
+            total = rec.total_amount or 1.0
+            distribution = {}
+            for line in rec.wage_line_ids:
+                key = str(line.analytic_account_id.id)
+                distribution[key] = distribution.get(key, 0.0) + ((line.amount / total) * 100)
+            for mv_line in payment.move_id.line_ids.filtered(
+                lambda l: l.account_id != rec.journal_id.default_account_id
+            ):
+                mv_line.analytic_distribution = distribution
+            rec.write({"payment_id": payment.id, "state": "posted"})
+
+
+class SiteLabourWagePaymentLine(models.Model):
+    _name = "site.labour.wage.payment.line"
+    _description = "Labour Wage Payment Line"
+
+    payment_id = fields.Many2one("site.labour.wage.payment", required=True, ondelete="cascade")
+    labour_id = fields.Many2one("res.partner", required=True)
+    amount = fields.Monetary(required=True, currency_field="currency_id")
+    analytic_account_id = fields.Many2one("account.analytic.account", required=True)
+    currency_id = fields.Many2one(related="payment_id.currency_id", store=True)

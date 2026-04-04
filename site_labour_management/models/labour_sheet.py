@@ -8,6 +8,7 @@ from odoo.exceptions import UserError, ValidationError
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
+    is_team_leader = fields.Boolean(string="Is Team Leader")
 
     def _slm_send_whatsapp(self, message):
         param = self.env["ir.config_parameter"].sudo()
@@ -41,8 +42,12 @@ class SiteLabourSheet(models.Model):
 
     name = fields.Char(default="New", readonly=True, copy=False)
     date = fields.Date(required=True, default=fields.Date.context_today)
-    project_id = fields.Many2one("project.project", required=True)
-    analytic_account_id = fields.Many2one("account.analytic.account", string="Analytic Account")
+    project_id = fields.Many2one("project.project")
+    analytic_account_id = fields.Many2one("account.analytic.account", string="Project", required=True)
+    team_leader_id = fields.Many2one(
+        "res.partner", domain=[("is_team_leader", "=", True)], required=True
+    )
+    labour_ids = fields.Many2many("res.partner", string="Sub Labours")
     supervisor_id = fields.Many2one("res.users", required=True, default=lambda self: self.env.user)
     state = fields.Selection(
         [("draft", "Draft"), ("submitted", "Submitted"), ("approved", "Approved")],
@@ -106,14 +111,25 @@ class SiteLabourSheet(models.Model):
             # Keep user-safe fallback to avoid onchange crashes.
             self.analytic_account_id = False
 
+    @api.onchange("team_leader_id")
+    def _onchange_team_leader_id(self):
+        if not self.team_leader_id:
+            self.labour_ids = [(5, 0, 0)]
+            return
+        self.labour_ids = [(6, 0, self.team_leader_id.child_ids.ids)]
+
     def action_submit(self):
         for rec in self:
+            if not rec.team_leader_id:
+                raise UserError("Team Leader is required before submitting.")
             if not rec.latitude or not rec.longitude:
                 raise UserError("GPS latitude and longitude are mandatory before submitting.")
             if not rec.photo_ids:
                 raise UserError("At least one photo is required before submitting.")
             if not (rec.team_line_ids or rec.individual_line_ids):
                 raise UserError("Add at least one labour line before submitting.")
+            if not rec.labour_ids:
+                raise UserError("Select at least one labour under the Team Leader.")
             rec.state = "submitted"
 
     def action_reset_draft(self):
@@ -149,25 +165,21 @@ class SiteLabourSheet(models.Model):
 
     def _push_to_weekly_bills(self, weekly_model):
         self.ensure_one()
-        partner_map = {}
-        for line in self.team_line_ids:
-            partner_map.setdefault(line.team_leader_id, 0.0)
-            partner_map[line.team_leader_id] += line.total
-        for line in self.individual_line_ids:
-            partner_map.setdefault(line.labour_id, 0.0)
-            partner_map[line.labour_id] += line.total
-
-        for partner, amount in partner_map.items():
-            bill = weekly_model.get_or_create_for(partner, self.date, self.billing_frequency or "weekly")
-            if self not in bill.sheet_ids:
-                bill.sheet_ids = [(4, self.id)]
-            existing = bill.line_ids.filtered(lambda l: l.source == self.name)
-            if existing:
-                existing.amount = amount
-            else:
-                bill.line_ids = [(0, 0, {"source": self.name, "amount": amount})]
-            if bill.state == "draft":
-                bill.action_create_vendor_bill()
+        if not self.team_leader_id:
+            raise UserError("Team Leader is required for billing.")
+        amount = self.total_amount
+        bill = weekly_model.get_or_create_for(
+            self.team_leader_id, self.date, self.billing_frequency or "weekly"
+        )
+        if self not in bill.sheet_ids:
+            bill.sheet_ids = [(4, self.id)]
+        existing = bill.line_ids.filtered(lambda l: l.source == self.name)
+        if existing:
+            existing.amount = amount
+        else:
+            bill.line_ids = [(0, 0, {"source": self.name, "amount": amount})]
+        if bill.state == "draft":
+            bill.action_create_vendor_bill()
 
     def _create_daily_wage_slips(self):
         self.ensure_one()
@@ -275,7 +287,7 @@ class SiteLabourTeamLine(models.Model):
     category_id = fields.Many2one("site.labour.category", required=True)
     labour_count = fields.Integer(required=True, default=1)
     wage = fields.Monetary(required=True, currency_field="currency_id")
-    worked_hours = fields.Float(default=9.0)
+    worked_hours = fields.Float(string="Hours", default=9.0)
     ot_hours = fields.Float(compute="_compute_ot_hours", store=True)
     total = fields.Monetary(compute="_compute_total", store=True, currency_field="currency_id")
     currency_id = fields.Many2one(related="sheet_id.currency_id", store=True)
@@ -308,7 +320,7 @@ class SiteLabourIndividualLine(models.Model):
     category_id = fields.Many2one("site.labour.category", required=True)
     daily_wage_rate = fields.Float()
     wage = fields.Monetary(required=True, currency_field="currency_id")
-    worked_hours = fields.Float(default=9.0)
+    worked_hours = fields.Float(string="Hours", default=9.0)
     ot_hours = fields.Float(compute="_compute_ot_hours", store=True)
     total = fields.Monetary(compute="_compute_total", store=True, currency_field="currency_id")
     currency_id = fields.Many2one(related="sheet_id.currency_id", store=True)
