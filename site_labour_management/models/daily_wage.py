@@ -111,6 +111,18 @@ class SiteLabourWagePayment(models.Model):
                 raise UserError("Total payment amount must be greater than zero.")
             if any(not line.analytic_account_id for line in rec.wage_line_ids):
                 raise UserError("All labour payment lines require analytic account.")
+            for line in rec.wage_line_ids:
+                billed = self.env["site.labour.weekly.bill"].search_count(
+                    [
+                        ("partner_id", "=", line.labour_id.id),
+                        ("state", "=", "billed"),
+                        ("move_id", "!=", False),
+                    ]
+                )
+                if not billed:
+                    raise UserError(
+                        f"Cannot pay {line.labour_id.display_name} without a billed vendor bill."
+                    )
             if rec.payment_id:
                 continue
             main_partner = rec.wage_line_ids[:1].labour_id

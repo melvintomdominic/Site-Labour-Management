@@ -82,6 +82,8 @@ class SiteLabourDailyBill(models.Model):
             if rec.move_id:
                 rec.state = "posted"
                 continue
+            if rec.labour_sheet_ids.filtered(lambda s: s.billing_status == "billed"):
+                raise UserError("One or more linked labour sheets are already billed.")
 
             invoice_lines = [
                 (
@@ -107,6 +109,7 @@ class SiteLabourDailyBill(models.Model):
                 }
             )
             rec.write({"move_id": move.id, "state": "posted"})
+            rec.labour_sheet_ids.write({"billing_status": "billed"})
 
 
 class SiteLabourDailyBillLine(models.Model):

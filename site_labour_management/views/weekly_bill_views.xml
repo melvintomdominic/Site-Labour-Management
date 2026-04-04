@@ -3,13 +3,13 @@
         <field name="name">site.labour.weekly.bill.tree</field>
         <field name="model">site.labour.weekly.bill</field>
         <field name="arch" type="xml">
-                <list>
-                    <field name="name"/>
-                    <field name="partner_id"/>
-                    <field name="week_start"/>
-                    <field name="week_end"/>
-                    <field name="analytic_account_id"/>
-                    <field name="billing_frequency"/>
+            <list>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="week_start"/>
+                <field name="week_end"/>
+                <field name="analytic_account_id"/>
+                <field name="billing_frequency"/>
                 <field name="amount_total"/>
                 <field name="state"/>
                 <field name="move_id"/>
@@ -25,7 +25,6 @@
                 <header>
                     <button name="action_create_vendor_bill" type="object" string="Create Vendor Bill" class="oe_highlight" invisible="state != 'draft'" groups="site_labour_management.group_site_labour_billing"/>
                     <button name="action_assign_analytic_account" type="object" string="Assign Analytic Account"/>
-                    <button name="action_pull_daily_bills" type="object" string="Pull Daily Bills"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,billed"/>
                 </header>
                 <sheet>
@@ -41,7 +40,6 @@
                     </group>
                     <group>
                         <field name="sheet_ids" widget="many2many_tags"/>
-                        <field name="daily_bill_ids" widget="many2many_tags"/>
                     </group>
                     <field name="line_ids">
                         <list editable="bottom">
@@ -59,5 +57,4 @@
         <field name="res_model">site.labour.weekly.bill</field>
         <field name="view_mode">list,form</field>
     </record>
-
 </odoo>

@@ -37,9 +37,9 @@
                             <field name="date"/>
                             <field name="attendance_type"/>
                             <field name="analytic_account_id" string="Project"/>
-                            <field name="team_leader_id" required="attendance_type == 'team'" invisible="attendance_type != 'team'"/>
+                            <field name="team_leader_id" required="attendance_type == 'team'" invisible="attendance_type != 'team'" domain="[('is_team_leader','=',True),('parent_id','=',False)]"/>
                             <field name="labour_ids" widget="many2many_tags" invisible="attendance_type != 'team'"/>
-                            <field name="labour_id" required="attendance_type == 'individual'" invisible="attendance_type != 'individual'"/>
+                            <field name="labour_id" required="attendance_type == 'individual'" invisible="attendance_type != 'individual'" domain="[('is_labour','=',True),('parent_id','!=',False)]"/>
                             <field name="supervisor_id"/>
                         </group>
                         <group>
@@ -68,7 +68,7 @@
                         <page string="Individual Labour" invisible="attendance_type != 'individual'">
                             <field name="individual_line_ids">
                                 <list editable="bottom">
-                                    <field name="labour_id" domain="[('is_labour','=',True)]"/>
+                                    <field name="labour_id" domain="[('is_labour','=',True),('parent_id','!=',False)]"/>
                                     <field name="category_id"/>
                                     <field name="wage"/>
                                     <field name="worked_hours" string="Hours"/>

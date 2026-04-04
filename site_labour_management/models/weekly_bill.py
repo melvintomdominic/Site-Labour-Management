@@ -15,7 +15,6 @@ class SiteLabourWeeklyBill(models.Model):
     week_start = fields.Date(required=True)
     week_end = fields.Date(required=True)
     analytic_account_id = fields.Many2one("account.analytic.account", string="Analytic Account")
-    daily_bill_ids = fields.Many2many("site.labour.daily.bill", string="Daily Bills")
     billing_frequency = fields.Selection(
         [("daily", "Daily"), ("weekly", "Weekly"), ("monthly", "Monthly")],
         required=True,
@@ -138,21 +137,6 @@ class SiteLabourWeeklyBill(models.Model):
             "target": "new",
             "context": {"active_model": self._name, "active_ids": self.ids},
         }
-
-    def action_pull_daily_bills(self):
-        for rec in self:
-            bills = self.env["site.labour.daily.bill"].search(
-                [
-                    ("partner_id", "=", rec.partner_id.id),
-                    ("date", ">=", rec.week_start),
-                    ("date", "<=", rec.week_end),
-                    ("state", "in", ["confirmed", "posted"]),
-                ]
-            )
-            rec.daily_bill_ids = [(6, 0, bills.ids)]
-            rec.line_ids = [(5, 0, 0)] + [
-                (0, 0, {"source": bill.name, "amount": bill.total_amount}) for bill in bills
-            ]
 
 
 class SiteLabourWeeklyBillLine(models.Model):
