@@ -11,7 +11,7 @@ class SiteLabourWeeklyBill(models.Model):
     _order = "week_start desc, id desc"
 
     name = fields.Char(default="New", readonly=True, copy=False)
-    partner_id = fields.Many2one("res.partner", required=True, domain=[("is_company", "=", True)])
+    partner_id = fields.Many2one("res.partner", required=True, domain=[("is_team_leader", "=", True)])
     week_start = fields.Date(required=True)
     week_end = fields.Date(required=True)
     analytic_account_id = fields.Many2one("account.analytic.account", string="Analytic Account")
@@ -124,7 +124,7 @@ class SiteLabourWeeklyBill(models.Model):
                 }
             )
             rec.write({"move_id": move.id, "state": "billed"})
-            rec.sheet_ids.write({"billing_status": "billed"})
+            rec.sheet_ids.filtered(lambda s: s.attendance_type == "team").write({"billing_status": "billed"})
             rec.partner_id._slm_send_whatsapp(
                 f"Vendor bill {move.name or move.id} created for amount {rec.amount_total:.2f}."
             )

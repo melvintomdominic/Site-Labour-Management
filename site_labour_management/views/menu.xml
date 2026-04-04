@@ -5,10 +5,8 @@
 
     <menuitem id="menu_site_labour_operations" name="Operations" parent="menu_site_labour_root" sequence="10" groups="base.group_user"/>
     <menuitem id="menu_site_labour_sheet" name="Labour Sheets" parent="menu_site_labour_operations" action="action_site_labour_sheet" sequence="11" groups="base.group_user"/>
-    <menuitem id="menu_site_labour_bulk_employee_update" name="Bulk Employee Wage/OT Update" parent="menu_site_labour_operations" action="action_site_labour_bulk_employee_update_wizard" sequence="13" groups="base.group_user"/>
 
     <menuitem id="menu_site_labour_master_data" name="Master Data" parent="menu_site_labour_root" sequence="15" groups="base.group_user"/>
-    <menuitem id="menu_site_labour_employee_wage" name="Employee Wages" parent="menu_site_labour_master_data" action="action_site_labour_employee_wage" sequence="16" groups="base.group_user"/>
     <menuitem id="menu_site_labour_category" name="Labour Categories" parent="menu_site_labour_master_data" action="action_site_labour_category" sequence="17" groups="base.group_user"/>
 
     <menuitem id="menu_site_labour_daily_wage" name="Daily Wage" parent="menu_site_labour_root" action="action_site_labour_daily_wage" sequence="20" groups="base.group_user"/>

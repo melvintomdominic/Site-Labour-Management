@@ -10,8 +10,6 @@ class SiteLabourDailyWageSlip(models.Model):
     name = fields.Char(default="New", readonly=True, copy=False)
     work_date = fields.Date(required=True, default=fields.Date.context_today)
     day_name = fields.Char(compute="_compute_day_name", store=True)
-    project_id = fields.Many2one("project.project")
-    employee_id = fields.Many2one("hr.employee")
     work_type = fields.Many2one("site.labour.category", required=True)
     labour_group = fields.Char()
     labour_id = fields.Many2one("res.partner", required=True)
@@ -19,7 +17,6 @@ class SiteLabourDailyWageSlip(models.Model):
     days_count = fields.Float(default=1.0)
     no_of_labours_worked = fields.Integer(default=1)
     basic_wage_day = fields.Monetary(currency_field="currency_id")
-    daily_wage_rate = fields.Float()
     overtime_duration = fields.Float()
     overtime_wage = fields.Monetary(currency_field="currency_id")
     extra_wage = fields.Monetary(currency_field="currency_id")
@@ -58,20 +55,8 @@ class SiteLabourDailyWageSlip(models.Model):
     )
     def _compute_total_wage(self):
         for rec in self:
-            wage_rate = rec.daily_wage_rate or rec.basic_wage_day
-            base = rec.days_count * rec.no_of_labours_worked * wage_rate
+            base = rec.days_count * rec.no_of_labours_worked * rec.basic_wage_day
             rec.total_wage = base + rec.overtime_wage + rec.extra_wage + rec.ta_wage + rec.food_allowance - rec.deduction
-
-    @api.onchange("employee_id", "work_date")
-    def _onchange_employee_id(self):
-        if not self.employee_id:
-            return
-        rate = self.env["site.labour.employee.wage"].get_latest_rate(
-            self.employee_id, self.work_date or fields.Date.context_today(self)
-        )
-        self.daily_wage_rate = rate
-        if rate:
-            self.basic_wage_day = rate
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -143,7 +128,6 @@ class SiteLabourWagePayment(models.Model):
                 }
             )
             payment.action_post()
-            # attach analytic distribution to non-liquidity lines for cost tracking
             total = rec.total_amount or 1.0
             distribution = {}
             for line in rec.wage_line_ids:

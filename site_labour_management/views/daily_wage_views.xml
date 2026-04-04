@@ -5,13 +5,13 @@
         <field name="arch" type="xml">
             <search string="Search Daily Wage Slips">
                 <field name="work_date"/>
-                <field name="project_id"/>
+                
                 <field name="work_type"/>
                 <field name="labour_group"/>
                 <field name="labour_id"/>
                 <filter name="filter_today" string="Today" domain="[('work_date','=', context_today())]"/>
                 <separator/>
-                <filter name="group_project" string="Project" context="{'group_by': 'project_id'}"/>
+                
                 <filter name="group_labour" string="Labour" context="{'group_by': 'labour_id'}"/>
                 <filter name="group_work_type" string="Work Type" context="{'group_by': 'work_type'}"/>
             </search>
@@ -27,13 +27,13 @@
                 <field name="labour_id" string="Labour Name"/>
                 <field name="work_type"/>
                 <field name="work_date"/>
-                <field name="employee_id"/>
+                
                 <field name="day_name" string="Day"/>
                 <field name="work"/>
                 <field name="days_count"/>
                 <field name="no_of_labours_worked"/>
                 <field name="basic_wage_day"/>
-                <field name="daily_wage_rate"/>
+                
                 <field name="overtime_duration"/>
                 <field name="overtime_wage"/>
                 <field name="extra_wage"/>
@@ -58,9 +58,9 @@
                         <group>
                             <field name="name" readonly="1"/>
                             <field name="work_date"/>
-                            <field name="project_id"/>
+                            
                             <field name="work_type"/>
-                            <field name="employee_id"/>
+                            
                             <field name="labour_group"/>
                             <field name="labour_id"/>
                         </group>
@@ -69,7 +69,7 @@
                             <field name="days_count"/>
                             <field name="no_of_labours_worked"/>
                             <field name="basic_wage_day"/>
-                            <field name="daily_wage_rate"/>
+                            
                             <field name="overtime_duration"/>
                             <field name="overtime_wage"/>
                             <field name="extra_wage"/>
@@ -90,7 +90,7 @@
         <field name="model">site.labour.daily.wage.slip</field>
         <field name="arch" type="xml">
             <pivot string="Labour Wage Summary">
-                <field name="project_id" type="row"/>
+                
                 <field name="labour_id" type="row"/>
                 <field name="days_count" type="measure"/>
                 <field name="no_of_labours_worked" type="measure"/>

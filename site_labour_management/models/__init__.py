@@ -1,3 +1,4 @@
+from . import res_partner
 from . import labour_category
 from . import labour_photo
 from . import labour_sheet
@@ -5,5 +6,4 @@ from . import weekly_bill
 from . import wage_slip
 from . import res_config_settings
 from . import daily_wage
-from . import employee_wage
 from . import daily_bill

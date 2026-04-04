@@ -9,6 +9,7 @@
                 <field name="attendance_type"/>
                 <field name="analytic_account_id"/>
                 <field name="team_leader_id"/>
+                <field name="labour_id"/>
                 <field name="supervisor_id"/>
                 <field name="total_amount"/>
                 <field name="state"/>
@@ -35,10 +36,10 @@
                             <field name="name" readonly="1"/>
                             <field name="date"/>
                             <field name="attendance_type"/>
-                            <field name="analytic_account_id"/>
-                            <field name="team_leader_id" invisible="attendance_type != 'team'"/>
-                            <field name="labour_ids" widget="many2many_tags" domain="[('parent_id','=',team_leader_id)]" invisible="attendance_type != 'team'"/>
-                            <field name="labour_id" invisible="attendance_type != 'individual'"/>
+                            <field name="analytic_account_id" string="Project"/>
+                            <field name="team_leader_id" required="attendance_type == 'team'" invisible="attendance_type != 'team'"/>
+                            <field name="labour_ids" widget="many2many_tags" invisible="attendance_type != 'team'"/>
+                            <field name="labour_id" required="attendance_type == 'individual'" invisible="attendance_type != 'individual'"/>
                             <field name="supervisor_id"/>
                         </group>
                         <group>
@@ -67,10 +68,8 @@
                         <page string="Individual Labour" invisible="attendance_type != 'individual'">
                             <field name="individual_line_ids">
                                 <list editable="bottom">
-                                    <field name="employee_id"/>
-                                    <field name="labour_id" domain="['|',('id','=',parent.labour_id),('parent_id','=',parent.team_leader_id)]"/>
+                                    <field name="labour_id" domain="[('is_labour','=',True)]"/>
                                     <field name="category_id"/>
-                                    <field name="daily_wage_rate"/>
                                     <field name="wage"/>
                                     <field name="worked_hours" string="Hours"/>
                                     <field name="ot_hours" readonly="1"/>
@@ -98,7 +97,7 @@
         <field name="model">site.labour.sheet</field>
         <field name="arch" type="xml">
             <graph string="Project Cost" type="bar">
-                <field name="project_id"/>
+                <field name="analytic_account_id"/>
                 <field name="total_amount" type="measure"/>
             </graph>
         </field>
@@ -110,7 +109,7 @@
         <field name="arch" type="xml">
             <pivot string="Supervisor vs Cost">
                 <field name="supervisor_id" type="row"/>
-                <field name="project_id" type="col"/>
+                <field name="analytic_account_id" type="col"/>
                 <field name="total_amount" type="measure"/>
             </pivot>
         </field>

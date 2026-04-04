@@ -16,6 +16,6 @@ class SiteLabourAnalyticBulkAssignWizard(models.TransientModel):
             records.write({"analytic_account_id": self.analytic_account_id.id})
             if active_model == "site.labour.sheet" and self.wage_rate:
                 records.mapped("individual_line_ids").write(
-                    {"daily_wage_rate": self.wage_rate, "wage": self.wage_rate}
+                    {"wage": self.wage_rate}
                 )
         return {"type": "ir.actions.act_window_close"}
