@@ -1,0 +1,37 @@
+<odoo>
+    <record id="view_site_labour_category_tree" model="ir.ui.view">
+        <field name="name">site.labour.category.tree</field>
+        <field name="model">site.labour.category</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="default_wage"/>
+                <field name="ot_rate"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_site_labour_category_form" model="ir.ui.view">
+        <field name="name">site.labour.category.form</field>
+        <field name="model">site.labour.category</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="default_wage"/>
+                        <field name="ot_rate"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_site_labour_category" model="ir.actions.act_window">
+        <field name="name">Labour Categories</field>
+        <field name="res_model">site.labour.category</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

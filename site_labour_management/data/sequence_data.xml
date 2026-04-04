@@ -1,0 +1,38 @@
+<odoo>
+    <record id="seq_site_labour_sheet" model="ir.sequence">
+        <field name="name">Site Labour Sheet</field>
+        <field name="code">site.labour.sheet</field>
+        <field name="prefix">SLS/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+
+    <record id="seq_site_labour_weekly_bill" model="ir.sequence">
+        <field name="name">Site Labour Weekly Bill</field>
+        <field name="code">site.labour.weekly.bill</field>
+        <field name="prefix">SLWB/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+
+    <record id="seq_site_labour_wage_slip" model="ir.sequence">
+        <field name="name">Site Labour Wage Slip</field>
+        <field name="code">site.labour.wage.slip</field>
+        <field name="prefix">SLWS/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+
+
+    <record id="seq_site_labour_daily_wage_slip" model="ir.sequence">
+        <field name="name">Site Labour Daily Wage Slip</field>
+        <field name="code">site.labour.daily.wage.slip</field>
+        <field name="prefix">SLDS/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+
+    <record id="seq_site_labour_wage_payment" model="ir.sequence">
+        <field name="name">Site Labour Wage Payment</field>
+        <field name="code">site.labour.wage.payment</field>
+        <field name="prefix">SLWP/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+
+</odoo>
