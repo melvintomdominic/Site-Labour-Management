@@ -1,12 +1,12 @@
 <odoo>
     <record id="group_site_labour_supervisor" model="res.groups">
         <field name="name">Site Labour Supervisor</field>
-        <field name="category_id" ref="base.module_category_project_management"/>
+        <field name="category_id" ref="base.module_category_services"/>
     </record>
 
     <record id="group_site_labour_admin" model="res.groups">
         <field name="name">Site Labour Admin</field>
-        <field name="category_id" ref="base.module_category_project_management"/>
+        <field name="category_id" ref="base.module_category_services"/>
         <field name="implied_ids" eval="[(4, ref('group_site_labour_supervisor'))]"/>
     </record>
 
