@@ -1,0 +1,28 @@
+{
+    "name": "Site Labour Management",
+    "version": "1.0",
+    "summary": "Daily site labour tracking, approvals, billing and alerts",
+    "category": "Accounting",
+    "author": "Site Labour Team",
+    "depends": ["base", "account", "mail"],
+    "data": [
+        "security/security.xml",
+        "security/ir.model.access.csv",
+        "data/sequence_data.xml",
+        "views/labour_category_views.xml",
+        "views/labour_sheet_views.xml",
+        "views/daily_bill_views.xml",
+        "views/weekly_bill_views.xml",
+        "views/wage_slip_views.xml",
+        "views/daily_wage_views.xml",
+        "views/labour_payment_views.xml",
+        "views/analytic_bulk_assign_wizard_views.xml",
+        "views/res_config_settings_views.xml",
+        "views/dashboard_views.xml",
+        "views/menu.xml",
+        "data/cron_jobs.xml"
+    ],
+    "installable": True,
+    "application": True,
+    "license": "LGPL-3",
+}
