@@ -72,6 +72,6 @@ class SiteLabourPaymentLine(models.Model):
     _description = "Site Labour Payment Voucher Line"
 
     payment_id = fields.Many2one("site.labour.payment", required=True, ondelete="cascade")
-    partner_id = fields.Many2one("res.partner", required=True, domain=[("is_team_leader", "=", True)])
+    partner_id = fields.Many2one("res.partner", required=True, domain=[("parent_id", "=", False)])
     amount = fields.Monetary(required=True, currency_field="currency_id")
     currency_id = fields.Many2one(related="payment_id.currency_id", store=True)

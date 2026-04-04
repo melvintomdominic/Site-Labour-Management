@@ -14,11 +14,11 @@ class SiteLabourSheet(models.Model):
         [("individual", "Individual"), ("team", "Team Based")], default="individual", required=True
     )
     analytic_account_id = fields.Many2one("account.analytic.account", string="Project", required=True)
-    team_leader_id = fields.Many2one("res.partner", domain=[("is_team_leader", "=", True)])
+    team_leader_id = fields.Many2one("res.partner", domain=[("parent_id", "=", False)])
     team_labour_ids = fields.Many2many(
         "res.partner",
         string="Team Labour",
-        domain="[('parent_id','=',team_leader_id),('is_labour','=',True)]",
+        domain="[('parent_id','=',team_leader_id)]",
     )
     labour_line_ids = fields.One2many("site.labour.line", "sheet_id", string="Labour Lines")
     supervisor_id = fields.Many2one("res.users", required=True, default=lambda self: self.env.user)
@@ -69,7 +69,7 @@ class SiteLabourSheet(models.Model):
             self.team_labour_ids = [(5, 0, 0)]
             return
         members = self.env["res.partner"].search(
-            [("parent_id", "=", self.team_leader_id.id), ("is_labour", "=", True)]
+            [("parent_id", "=", self.team_leader_id.id)]
         )
         self.team_labour_ids = [(6, 0, members.ids)]
         if self.attendance_type == "team":
@@ -216,7 +216,7 @@ class SiteLabourLine(models.Model):
     _description = "Site Labour Line"
 
     sheet_id = fields.Many2one("site.labour.sheet", required=True, ondelete="cascade")
-    labour_id = fields.Many2one("res.partner", required=True, domain=[("is_labour", "=", True)])
+    labour_id = fields.Many2one("res.partner", required=True, domain=[("parent_id", "!=", False)])
     category_id = fields.Many2one("site.labour.category", required=True)
     wage = fields.Monetary(required=True, currency_field="currency_id")
     hours = fields.Float(default=1.0)

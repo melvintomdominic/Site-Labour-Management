@@ -10,7 +10,6 @@
         "security/ir.model.access.csv",
         "data/sequence_data.xml",
         "views/labour_category_views.xml",
-        "views/res_partner_views.xml",
         "views/labour_sheet_views.xml",
         "views/daily_bill_views.xml",
         "views/weekly_bill_views.xml",
