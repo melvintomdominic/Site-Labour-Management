@@ -6,5 +6,4 @@
         <field name="context">{'search_default_today': 1}</field>
     </record>
 
-    <menuitem id="menu_site_labour_dashboard" name="Dashboard" parent="menu_site_labour_root" action="action_site_labour_dashboard" sequence="5"/>
 </odoo>

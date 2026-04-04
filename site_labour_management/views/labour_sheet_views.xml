@@ -114,8 +114,4 @@
         <field name="view_mode">list,form,graph,pivot</field>
     </record>
 
-    <menuitem id="menu_site_labour_root" name="Site Labour" sequence="10"/>
-    <menuitem id="menu_site_labour_operations" name="Operations" parent="menu_site_labour_root" sequence="10"/>
-    <menuitem id="menu_site_labour_sheet" name="Labour Sheets" parent="menu_site_labour_operations" action="action_site_labour_sheet"/>
-    <menuitem id="menu_site_labour_category" name="Labour Categories" parent="menu_site_labour_operations" action="action_site_labour_category"/>
 </odoo>

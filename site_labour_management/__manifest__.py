@@ -16,6 +16,7 @@
         "views/daily_wage_views.xml",
         "views/res_config_settings_views.xml",
         "views/dashboard_views.xml",
+        "views/menu.xml",
         "data/cron_jobs.xml"
     ],
     "installable": True,

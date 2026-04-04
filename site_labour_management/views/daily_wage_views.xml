@@ -155,6 +155,4 @@
         <field name="view_mode">list,form</field>
     </record>
 
-    <menuitem id="menu_site_labour_daily_wage" name="Daily Wage Slips &amp; Payments" parent="menu_site_labour_root" action="action_site_labour_daily_wage" sequence="15"/>
-    <menuitem id="menu_site_labour_wage_payment" name="Wage Payments" parent="menu_site_labour_daily_wage" action="action_site_labour_wage_payment" sequence="1"/>
 </odoo>
