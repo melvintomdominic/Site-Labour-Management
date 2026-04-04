@@ -6,6 +6,7 @@
             <list>
                 <field name="name"/>
                 <field name="date"/>
+                <field name="attendance_type"/>
                 <field name="analytic_account_id"/>
                 <field name="team_leader_id"/>
                 <field name="supervisor_id"/>
@@ -33,9 +34,11 @@
                         <group>
                             <field name="name" readonly="1"/>
                             <field name="date"/>
+                            <field name="attendance_type"/>
                             <field name="analytic_account_id"/>
-                            <field name="team_leader_id"/>
-                            <field name="labour_ids" widget="many2many_tags" domain="[('parent_id','=',team_leader_id)]"/>
+                            <field name="team_leader_id" invisible="attendance_type != 'team'"/>
+                            <field name="labour_ids" widget="many2many_tags" domain="[('parent_id','=',team_leader_id)]" invisible="attendance_type != 'team'"/>
+                            <field name="labour_id" invisible="attendance_type != 'individual'"/>
                             <field name="supervisor_id"/>
                         </group>
                         <group>
@@ -48,7 +51,7 @@
                     </group>
 
                     <notebook>
-                        <page string="Team Labour">
+                        <page string="Team Labour" invisible="attendance_type != 'team'">
                             <field name="team_line_ids">
                                 <list editable="bottom">
                                     <field name="team_leader_id"/>
@@ -61,11 +64,11 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="Individual Labour">
+                        <page string="Individual Labour" invisible="attendance_type != 'individual'">
                             <field name="individual_line_ids">
                                 <list editable="bottom">
                                     <field name="employee_id"/>
-                                    <field name="labour_id" domain="[('parent_id','=',parent.team_leader_id)]"/>
+                                    <field name="labour_id" domain="['|',('id','=',parent.labour_id),('parent_id','=',parent.team_leader_id)]"/>
                                     <field name="category_id"/>
                                     <field name="daily_wage_rate"/>
                                     <field name="wage"/>

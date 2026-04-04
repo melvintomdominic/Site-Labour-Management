@@ -40,12 +40,16 @@ class SiteLabourSheet(models.Model):
 
     name = fields.Char(default="New", readonly=True, copy=False)
     date = fields.Date(required=True, default=fields.Date.context_today)
+    attendance_type = fields.Selection(
+        [("team", "Team Based"), ("individual", "Individual")], default="team", required=True
+    )
     project_id = fields.Many2one("project.project")
     analytic_account_id = fields.Many2one("account.analytic.account", string="Project", required=True)
     team_leader_id = fields.Many2one(
         "res.partner", domain=[("is_company", "=", True)], required=True
     )
     labour_ids = fields.Many2many("res.partner", string="Sub Labours")
+    labour_id = fields.Many2one("res.partner", string="Labour")
     supervisor_id = fields.Many2one("res.users", required=True, default=lambda self: self.env.user)
     state = fields.Selection(
         [("draft", "Draft"), ("submitted", "Submitted"), ("approved", "Approved")],
@@ -116,18 +120,28 @@ class SiteLabourSheet(models.Model):
             return
         self.labour_ids = [(6, 0, self.team_leader_id.child_ids.ids)]
 
+    @api.onchange("attendance_type")
+    def _onchange_attendance_type(self):
+        if self.attendance_type == "individual":
+            self.team_leader_id = False
+            self.labour_ids = [(5, 0, 0)]
+        else:
+            self.labour_id = False
+
     def action_submit(self):
         for rec in self:
-            if not rec.team_leader_id:
+            if rec.attendance_type == "team" and not rec.team_leader_id:
                 raise UserError("Team Leader is required before submitting.")
+            if rec.attendance_type == "team" and not rec.labour_ids:
+                raise UserError("Select at least one labour under the Team Leader.")
+            if rec.attendance_type == "individual" and not rec.labour_id:
+                raise UserError("Labour is required for Individual attendance.")
             if not rec.latitude or not rec.longitude:
                 raise UserError("GPS latitude and longitude are mandatory before submitting.")
             if not rec.photo_ids:
                 raise UserError("At least one photo is required before submitting.")
             if not (rec.team_line_ids or rec.individual_line_ids):
                 raise UserError("Add at least one labour line before submitting.")
-            if not rec.labour_ids:
-                raise UserError("Select at least one labour under the Team Leader.")
             rec.state = "submitted"
 
     def action_reset_draft(self):
@@ -163,11 +177,12 @@ class SiteLabourSheet(models.Model):
 
     def _push_to_weekly_bills(self, weekly_model):
         self.ensure_one()
-        if not self.team_leader_id:
-            raise UserError("Team Leader is required for billing.")
+        partner = self.team_leader_id if self.attendance_type == "team" else self.labour_id
+        if not partner:
+            raise UserError("Payment partner is required for billing.")
         amount = self.total_amount
         bill = weekly_model.get_or_create_for(
-            self.team_leader_id, self.date, self.billing_frequency or "weekly"
+            partner, self.date, self.billing_frequency or "weekly"
         )
         if self not in bill.sheet_ids:
             bill.sheet_ids = [(4, self.id)]
@@ -189,7 +204,7 @@ class SiteLabourSheet(models.Model):
                 "work_type": line.category_id.id,
                 "labour_group": line.team_leader_id.name,
                 "labour_id": line.team_leader_id.id,
-                "work": self.project_id.name,
+                "work": self.analytic_account_id.display_name or "",
                 "days_count": 1.0,
                 "no_of_labours_worked": line.labour_count,
                 "basic_wage_day": line.wage,
@@ -220,7 +235,7 @@ class SiteLabourSheet(models.Model):
                 "labour_group": "Individual",
                 "employee_id": line.employee_id.id,
                 "labour_id": line.labour_id.id,
-                "work": self.project_id.name,
+                "work": self.analytic_account_id.display_name or "",
                 "days_count": 1.0,
                 "no_of_labours_worked": 1,
                 "basic_wage_day": line.wage,
