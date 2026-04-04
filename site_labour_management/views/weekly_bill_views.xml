@@ -1,0 +1,58 @@
+<odoo>
+    <record id="view_site_labour_weekly_bill_tree" model="ir.ui.view">
+        <field name="name">site.labour.weekly.bill.tree</field>
+        <field name="model">site.labour.weekly.bill</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="week_start"/>
+                <field name="week_end"/>
+                <field name="amount_total"/>
+                <field name="state"/>
+                <field name="move_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_site_labour_weekly_bill_form" model="ir.ui.view">
+        <field name="name">site.labour.weekly.bill.form</field>
+        <field name="model">site.labour.weekly.bill</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_create_vendor_bill" type="object" string="Create Vendor Bill" class="oe_highlight" invisible="state != 'draft'" groups="site_labour_management.group_site_labour_billing"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,billed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" readonly="1"/>
+                        <field name="partner_id"/>
+                        <field name="week_start"/>
+                        <field name="week_end"/>
+                        <field name="move_id" readonly="1"/>
+                        <field name="amount_total" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="sheet_ids" widget="many2many_tags"/>
+                    </group>
+                    <field name="line_ids">
+                        <tree editable="bottom">
+                            <field name="source"/>
+                            <field name="amount"/>
+                        </tree>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_site_labour_weekly_bill" model="ir.actions.act_window">
+        <field name="name">Weekly Bills</field>
+        <field name="res_model">site.labour.weekly.bill</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_site_labour_billing" name="Billing" parent="menu_site_labour_root" sequence="20"/>
+    <menuitem id="menu_site_labour_weekly_bill" name="Weekly Bills" parent="menu_site_labour_billing" action="action_site_labour_weekly_bill"/>
+</odoo>
