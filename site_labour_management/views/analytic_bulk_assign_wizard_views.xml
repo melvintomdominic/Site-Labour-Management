@@ -1,0 +1,25 @@
+<odoo>
+    <record id="view_site_labour_analytic_bulk_assign_wizard" model="ir.ui.view">
+        <field name="name">site.labour.analytic.bulk.assign.wizard.form</field>
+        <field name="model">site.labour.analytic.bulk.assign.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Assign Analytic Account">
+                <group>
+                    <field name="analytic_account_id"/>
+                    <field name="wage_rate"/>
+                </group>
+                <footer>
+                    <button string="Apply" type="object" name="action_apply" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_site_labour_analytic_bulk_assign_wizard" model="ir.actions.act_window">
+        <field name="name">Assign Analytic Account</field>
+        <field name="res_model">site.labour.analytic.bulk.assign.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

@@ -1,0 +1,23 @@
+<odoo>
+    <record id="ir_cron_missing_entry_reminder" model="ir.cron">
+        <field name="name">Site Labour Missing Entry Reminder</field>
+        <field name="model_id" ref="model_site_labour_sheet"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_missing_entry_reminder()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall">2026-04-04 19:00:00</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_payment_reminder" model="ir.cron">
+        <field name="name">Site Labour Payment Reminder</field>
+        <field name="model_id" ref="model_site_labour_sheet"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_payment_reminder()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall">2026-04-04 10:00:00</field>
+        <field name="active">True</field>
+    </record>
+</odoo>
