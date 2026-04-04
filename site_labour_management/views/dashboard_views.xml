@@ -2,7 +2,7 @@
     <record id="action_site_labour_dashboard" model="ir.actions.act_window">
         <field name="name">Labour Dashboard</field>
         <field name="res_model">site.labour.sheet</field>
-        <field name="view_mode">graph,pivot,tree</field>
+        <field name="view_mode">graph,pivot,list</field>
         <field name="context">{'search_default_today': 1}</field>
     </record>
 
