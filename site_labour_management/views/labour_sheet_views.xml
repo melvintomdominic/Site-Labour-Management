@@ -50,24 +50,24 @@
                     </group>
 
                     <field name="labour_line_ids">
-                        <tree editable="bottom">
+                        <list editable="bottom">
                             <field name="labour_id" domain="[('parent_id','!=',False)]"/>
                             <field name="category_id"/>
                             <field name="wage"/>
                             <field name="hours"/>
                             <field name="ot_hours"/>
                             <field name="total"/>
-                        </tree>
+                        </list>
                     </field>
 
                     <notebook>
                         <page string="Photos">
                             <field name="photo_ids">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="name"/>
                                     <field name="image_type"/>
                                     <field name="image" widget="image"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>
