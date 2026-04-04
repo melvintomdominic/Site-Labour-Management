@@ -8,8 +8,6 @@ from odoo.exceptions import UserError, ValidationError
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
-    is_team_leader = fields.Boolean(string="Is Team Leader")
-
     def _slm_send_whatsapp(self, message):
         param = self.env["ir.config_parameter"].sudo()
         sid = param.get_param("site_labour_management.twilio_sid")
@@ -45,7 +43,7 @@ class SiteLabourSheet(models.Model):
     project_id = fields.Many2one("project.project")
     analytic_account_id = fields.Many2one("account.analytic.account", string="Project", required=True)
     team_leader_id = fields.Many2one(
-        "res.partner", domain=[("is_team_leader", "=", True)], required=True
+        "res.partner", domain=[("is_company", "=", True)], required=True
     )
     labour_ids = fields.Many2many("res.partner", string="Sub Labours")
     supervisor_id = fields.Many2one("res.users", required=True, default=lambda self: self.env.user)
