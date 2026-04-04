@@ -5,3 +5,5 @@ from . import weekly_bill
 from . import wage_slip
 from . import res_config_settings
 from . import daily_wage
+from . import employee_wage
+from . import daily_bill

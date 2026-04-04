@@ -35,4 +35,13 @@
         <field name="padding">4</field>
     </record>
 
+
+
+    <record id="seq_site_labour_daily_bill" model="ir.sequence">
+        <field name="name">Site Labour Daily Bill</field>
+        <field name="code">site.labour.daily.bill</field>
+        <field name="prefix">SLDB/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+
 </odoo>

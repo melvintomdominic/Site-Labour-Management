@@ -23,6 +23,7 @@
                 <header>
                     <button name="action_submit" type="object" string="Submit" class="oe_highlight" invisible="state != 'draft'"/>
                     <button name="action_approve" type="object" string="Approve" class="btn-primary" invisible="state != 'submitted'" groups="site_labour_management.group_site_labour_admin"/>
+                    <button name="action_assign_analytic_account" type="object" string="Assign Analytic Account"/>
                     <button name="action_reset_draft" type="object" string="Reset to Draft" invisible="state == 'draft'"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved"/>
                 </header>
@@ -61,8 +62,10 @@
                         <page string="Individual Labour">
                             <field name="individual_line_ids">
                                 <list editable="bottom">
+                                    <field name="employee_id"/>
                                     <field name="labour_id"/>
                                     <field name="category_id"/>
+                                    <field name="daily_wage_rate"/>
                                     <field name="wage"/>
                                     <field name="worked_hours"/>
                                     <field name="ot_hours" readonly="1"/>

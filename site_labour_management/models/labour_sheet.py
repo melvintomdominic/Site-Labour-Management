@@ -42,7 +42,7 @@ class SiteLabourSheet(models.Model):
     name = fields.Char(default="New", readonly=True, copy=False)
     date = fields.Date(required=True, default=fields.Date.context_today)
     project_id = fields.Many2one("project.project", required=True)
-    analytic_account_id = fields.Many2one("account.analytic.account")
+    analytic_account_id = fields.Many2one("account.analytic.account", string="Analytic Account")
     supervisor_id = fields.Many2one("res.users", required=True, default=lambda self: self.env.user)
     state = fields.Selection(
         [("draft", "Draft"), ("submitted", "Submitted"), ("approved", "Approved")],
@@ -95,7 +95,16 @@ class SiteLabourSheet(models.Model):
 
     @api.onchange("project_id")
     def _onchange_project_id(self):
-        self.analytic_account_id = self.project_id.analytic_account_id
+        if not self.project_id:
+            return
+        # Odoo 17/18: project analytic link may not expose analytic_account_id.
+        if hasattr(self.project_id, "account_id") and self.project_id.account_id:
+            self.analytic_account_id = self.project_id.account_id
+        elif hasattr(self.project_id, "analytic_account_id") and self.project_id.analytic_account_id:
+            self.analytic_account_id = self.project_id.analytic_account_id
+        else:
+            # Keep user-safe fallback to avoid onchange crashes.
+            self.analytic_account_id = False
 
     def action_submit(self):
         for rec in self:
@@ -109,6 +118,16 @@ class SiteLabourSheet(models.Model):
 
     def action_reset_draft(self):
         self.write({"state": "draft"})
+
+    def action_assign_analytic_account(self):
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Assign Analytic Account",
+            "res_model": "site.labour.analytic.bulk.assign.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"active_model": self._name, "active_ids": self.ids},
+        }
 
     def action_approve(self):
         weekly_model = self.env["site.labour.weekly.bill"]
@@ -149,6 +168,70 @@ class SiteLabourSheet(models.Model):
                 bill.line_ids = [(0, 0, {"source": self.name, "amount": amount})]
             if bill.state == "draft":
                 bill.action_create_vendor_bill()
+
+    def _create_daily_wage_slips(self):
+        self.ensure_one()
+        daily_model = self.env["site.labour.daily.wage.slip"]
+        for line in self.team_line_ids:
+            vals = {
+                "work_date": self.date,
+                "project_id": self.project_id.id,
+                "work_type": line.category_id.id,
+                "labour_group": line.team_leader_id.name,
+                "labour_id": line.team_leader_id.id,
+                "work": self.project_id.name,
+                "days_count": 1.0,
+                "no_of_labours_worked": line.labour_count,
+                "basic_wage_day": line.wage,
+                "daily_wage_rate": line.wage,
+                "overtime_duration": line.ot_hours,
+                "overtime_wage": line.ot_hours * line.category_id.ot_rate,
+                "sheet_id": self.id,
+                "remarks": f"Auto-generated from {self.name}",
+            }
+            existing = daily_model.search(
+                [
+                    ("sheet_id", "=", self.id),
+                    ("labour_id", "=", line.team_leader_id.id),
+                    ("work_type", "=", line.category_id.id),
+                ],
+                limit=1,
+            )
+            if existing:
+                existing.write(vals)
+            else:
+                daily_model.create(vals)
+
+        for line in self.individual_line_ids:
+            vals = {
+                "work_date": self.date,
+                "project_id": self.project_id.id,
+                "work_type": line.category_id.id,
+                "labour_group": "Individual",
+                "employee_id": line.employee_id.id,
+                "labour_id": line.labour_id.id,
+                "work": self.project_id.name,
+                "days_count": 1.0,
+                "no_of_labours_worked": 1,
+                "basic_wage_day": line.wage,
+                "daily_wage_rate": line.daily_wage_rate or line.wage,
+                "overtime_duration": line.ot_hours,
+                "overtime_wage": line.ot_hours * line.category_id.ot_rate,
+                "sheet_id": self.id,
+                "remarks": f"Auto-generated from {self.name}",
+            }
+            existing = daily_model.search(
+                [
+                    ("sheet_id", "=", self.id),
+                    ("labour_id", "=", line.labour_id.id),
+                    ("work_type", "=", line.category_id.id),
+                ],
+                limit=1,
+            )
+            if existing:
+                existing.write(vals)
+            else:
+                daily_model.create(vals)
 
     @api.model
     def cron_missing_entry_reminder(self):
@@ -220,8 +303,10 @@ class SiteLabourIndividualLine(models.Model):
     _description = "Site Individual Labour Line"
 
     sheet_id = fields.Many2one("site.labour.sheet", required=True, ondelete="cascade")
+    employee_id = fields.Many2one("hr.employee")
     labour_id = fields.Many2one("res.partner", required=True)
     category_id = fields.Many2one("site.labour.category", required=True)
+    daily_wage_rate = fields.Float()
     wage = fields.Monetary(required=True, currency_field="currency_id")
     worked_hours = fields.Float(default=9.0)
     ot_hours = fields.Float(compute="_compute_ot_hours", store=True)
@@ -231,6 +316,18 @@ class SiteLabourIndividualLine(models.Model):
     @api.onchange("category_id")
     def _onchange_category_id(self):
         self.wage = self.category_id.default_wage
+
+    @api.onchange("employee_id")
+    def _onchange_employee_id(self):
+        if not self.employee_id:
+            return
+        self.labour_id = self.employee_id.address_home_id or self.labour_id
+        rate = self.env["site.labour.employee.wage"].get_latest_rate(
+            self.employee_id, self.sheet_id.date or fields.Date.context_today(self)
+        )
+        self.daily_wage_rate = rate
+        if rate:
+            self.wage = rate
 
     @api.depends("worked_hours")
     def _compute_ot_hours(self):
