@@ -11,7 +11,7 @@ class SiteLabourWeeklyBill(models.Model):
     _order = "week_start desc, id desc"
 
     name = fields.Char(default="New", readonly=True, copy=False)
-    partner_id = fields.Many2one("res.partner", required=True, domain=[("parent_id", "=", False)])
+    partner_id = fields.Many2one("res.partner", required=True, domain=[("is_team_leader", "=", True)])
     week_start = fields.Date(required=True)
     week_end = fields.Date(required=True)
     analytic_account_id = fields.Many2one("account.analytic.account", string="Analytic Account")

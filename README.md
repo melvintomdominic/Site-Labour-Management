@@ -39,8 +39,8 @@ To avoid deployment-time schema errors (for example `UndefinedColumn`), follow t
 4. Clear browser cache / reload web assets.
 
 ### Safety notes
-- This module avoids runtime references to non-core custom `res.partner` columns.
-- Partner hierarchy logic uses core fields (`parent_id`) so reads remain safe before/after upgrades.
+- This module adds partner labour fields, so restart and module upgrade are mandatory before use.
+- Partner hierarchy uses `res.partner` fields `is_labour`, `is_team_leader`, and `parent_id`.
 - If you add new stored fields in future changes, always run `-u site_labour_management` before user traffic.
 
 ## Security Roles

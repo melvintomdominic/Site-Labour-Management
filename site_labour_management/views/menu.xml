@@ -11,7 +11,7 @@
 
     <menuitem id="menu_site_labour_daily_wage" name="Daily Wage" parent="menu_site_labour_root" action="action_site_labour_daily_wage" sequence="20" groups="base.group_user"/>
     <menuitem id="menu_site_labour_payments" name="Payments" parent="menu_site_labour_root" sequence="25" groups="base.group_user"/>
-    <menuitem id="menu_site_labour_wage_payment" name="Labour Payments" parent="menu_site_labour_payments" action="action_site_labour_wage_payment" sequence="26" groups="base.group_user"/>
+    <menuitem id="menu_site_labour_wage_payment" name="Labour Payments" parent="menu_site_labour_payments" action="action_site_labour_payment" sequence="26" groups="base.group_user"/>
 
     <menuitem id="menu_site_labour_billing" name="Billing" parent="menu_site_labour_root" sequence="30" groups="base.group_user"/>
     <menuitem id="menu_site_labour_weekly_bill" name="Weekly Bill" parent="menu_site_labour_billing" action="action_site_labour_weekly_bill" sequence="31" groups="base.group_user"/>

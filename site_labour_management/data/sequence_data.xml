@@ -35,6 +35,12 @@
         <field name="padding">4</field>
     </record>
 
+    <record id="seq_site_labour_payment" model="ir.sequence">
+        <field name="name">Site Labour Payment</field>
+        <field name="code">site.labour.payment</field>
+        <field name="prefix">SLPV/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
 
 
     <record id="seq_site_labour_daily_bill" model="ir.sequence">

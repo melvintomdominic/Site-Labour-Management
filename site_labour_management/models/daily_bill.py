@@ -9,7 +9,7 @@ class SiteLabourDailyBill(models.Model):
 
     name = fields.Char(default="New", readonly=True, copy=False)
     date = fields.Date(required=True, default=fields.Date.context_today)
-    partner_id = fields.Many2one("res.partner", required=True, domain=[("parent_id", "=", False)])
+    partner_id = fields.Many2one("res.partner", required=True, domain=[("is_team_leader", "=", True)])
     labour_sheet_ids = fields.Many2many("site.labour.sheet")
     line_ids = fields.One2many("site.labour.daily.bill.line", "bill_id")
     total_amount = fields.Monetary(compute="_compute_total_amount", store=True)
@@ -45,18 +45,18 @@ class SiteLabourDailyBill(models.Model):
             if not rec.partner_id and rec.labour_sheet_ids:
                 rec.partner_id = rec.labour_sheet_ids[:1].team_leader_id
             lines = [(5, 0, 0)]
-            for sheet in rec.labour_sheet_ids.filtered(lambda s: s.attendance_type == "team"):
-                if rec.partner_id and sheet.team_leader_id != rec.partner_id:
+            for sheet in rec.labour_sheet_ids:
+                if rec.partner_id and sheet.attendance_type == "team" and sheet.team_leader_id != rec.partner_id:
                     continue
-                for line in sheet.team_line_ids:
+                for line in sheet.labour_line_ids:
                     lines.append(
                         (
                             0,
                             0,
                             {
-                                "labour_id": line.team_leader_id.id,
+                                "labour_id": line.labour_id.id,
                                 "work_type": line.category_id.name,
-                                "quantity": line.labour_count,
+                                "quantity": line.hours,
                                 "rate": line.wage,
                             },
                         )

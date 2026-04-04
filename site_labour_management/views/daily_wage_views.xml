@@ -5,13 +5,11 @@
         <field name="arch" type="xml">
             <search string="Search Daily Wage Slips">
                 <field name="work_date"/>
-                
                 <field name="work_type"/>
                 <field name="labour_group"/>
                 <field name="labour_id"/>
                 <filter name="filter_today" string="Today" domain="[('work_date','=', context_today())]"/>
                 <separator/>
-                
                 <filter name="group_labour" string="Labour" context="{'group_by': 'labour_id'}"/>
                 <filter name="group_work_type" string="Work Type" context="{'group_by': 'work_type'}"/>
             </search>
@@ -27,13 +25,11 @@
                 <field name="labour_id" string="Labour Name"/>
                 <field name="work_type"/>
                 <field name="work_date"/>
-                
                 <field name="day_name" string="Day"/>
                 <field name="work"/>
                 <field name="days_count"/>
                 <field name="no_of_labours_worked"/>
                 <field name="basic_wage_day"/>
-                
                 <field name="overtime_duration"/>
                 <field name="overtime_wage"/>
                 <field name="extra_wage"/>
@@ -42,8 +38,6 @@
                 <field name="deduction"/>
                 <field name="total_wage"/>
                 <field name="remarks"/>
-                <field name="create_uid" string="Created By"/>
-                <field name="create_date" string="Created On"/>
             </list>
         </field>
     </record>
@@ -58,9 +52,7 @@
                         <group>
                             <field name="name" readonly="1"/>
                             <field name="work_date"/>
-                            
                             <field name="work_type"/>
-                            
                             <field name="labour_group"/>
                             <field name="labour_id"/>
                         </group>
@@ -69,7 +61,6 @@
                             <field name="days_count"/>
                             <field name="no_of_labours_worked"/>
                             <field name="basic_wage_day"/>
-                            
                             <field name="overtime_duration"/>
                             <field name="overtime_wage"/>
                             <field name="extra_wage"/>
@@ -90,7 +81,6 @@
         <field name="model">site.labour.daily.wage.slip</field>
         <field name="arch" type="xml">
             <pivot string="Labour Wage Summary">
-                
                 <field name="labour_id" type="row"/>
                 <field name="days_count" type="measure"/>
                 <field name="no_of_labours_worked" type="measure"/>
@@ -101,67 +91,10 @@
         </field>
     </record>
 
-    <record id="view_site_labour_wage_payment_tree" model="ir.ui.view">
-        <field name="name">site.labour.wage.payment.tree</field>
-        <field name="model">site.labour.wage.payment</field>
-        <field name="arch" type="xml">
-            <list>
-                <field name="tr_id" string="TR ID"/>
-                <field name="state"/>
-                <field name="paid_date"/>
-                <field name="total_amount"/>
-                <field name="journal_id"/>
-                <field name="payment_method_line_id"/>
-                <field name="payment_id"/>
-                <field name="remarks"/>
-                <field name="create_uid" string="Created By"/>
-                <field name="create_date" string="Created Date"/>
-            </list>
-        </field>
-    </record>
-
-    <record id="view_site_labour_wage_payment_form" model="ir.ui.view">
-        <field name="name">site.labour.wage.payment.form</field>
-        <field name="model">site.labour.wage.payment</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                    <button name="action_confirm_payment" type="object" string="Confirm Payment" class="btn-primary" invisible="state != 'draft'"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
-                </header>
-                <sheet>
-                    <group>
-                        <field name="tr_id" readonly="1"/>
-                        <field name="paid_date"/>
-                        <field name="journal_id"/>
-                        <field name="payment_method_line_id"/>
-                        <field name="total_amount" readonly="1"/>
-                        <field name="payment_id" readonly="1"/>
-                        <field name="remarks"/>
-                    </group>
-                    <field name="wage_line_ids">
-                        <list editable="bottom">
-                            <field name="labour_id"/>
-                            <field name="amount"/>
-                            <field name="analytic_account_id"/>
-                        </list>
-                    </field>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
     <record id="action_site_labour_daily_wage" model="ir.actions.act_window">
-        <field name="name">Daily Wage Slips &amp; Payments</field>
+        <field name="name">Daily Wage Slips</field>
         <field name="res_model">site.labour.daily.wage.slip</field>
         <field name="view_mode">list,form,pivot</field>
         <field name="search_view_id" ref="view_site_labour_daily_wage_slip_search"/>
     </record>
-
-    <record id="action_site_labour_wage_payment" model="ir.actions.act_window">
-        <field name="name">Labour Wage Payments</field>
-        <field name="res_model">site.labour.wage.payment</field>
-        <field name="view_mode">list,form</field>
-    </record>
-
 </odoo>

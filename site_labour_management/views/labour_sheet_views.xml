@@ -9,7 +9,6 @@
                 <field name="attendance_type"/>
                 <field name="analytic_account_id"/>
                 <field name="team_leader_id"/>
-                <field name="labour_id"/>
                 <field name="supervisor_id"/>
                 <field name="total_amount"/>
                 <field name="state"/>
@@ -37,9 +36,8 @@
                             <field name="date"/>
                             <field name="attendance_type"/>
                             <field name="analytic_account_id" string="Project"/>
-                            <field name="team_leader_id" required="attendance_type == 'team'" invisible="attendance_type != 'team'" domain="[('parent_id','=',False)]"/>
-                            <field name="labour_ids" widget="many2many_tags" invisible="attendance_type != 'team'"/>
-                            <field name="labour_id" required="attendance_type == 'individual'" invisible="attendance_type != 'individual'" domain="[('parent_id','!=',False)]"/>
+                            <field name="team_leader_id" invisible="attendance_type != 'team'" domain="[('is_team_leader','=',True)]"/>
+                            <field name="team_labour_ids" widget="many2many_tags" invisible="attendance_type != 'team'" domain="[('parent_id','=',team_leader_id),('is_labour','=',True)]"/>
                             <field name="supervisor_id"/>
                         </group>
                         <group>
@@ -51,39 +49,25 @@
                         </group>
                     </group>
 
+                    <field name="labour_line_ids">
+                        <tree editable="bottom">
+                            <field name="labour_id" domain="[('is_labour','=',True)]"/>
+                            <field name="category_id"/>
+                            <field name="wage"/>
+                            <field name="hours"/>
+                            <field name="ot_hours"/>
+                            <field name="total"/>
+                        </tree>
+                    </field>
+
                     <notebook>
-                        <page string="Team Labour" invisible="attendance_type != 'team'">
-                            <field name="team_line_ids">
-                                <list editable="bottom">
-                                    <field name="team_leader_id"/>
-                                    <field name="category_id"/>
-                                    <field name="labour_count"/>
-                                    <field name="wage"/>
-                                    <field name="worked_hours" string="Hours"/>
-                                    <field name="ot_hours" readonly="1"/>
-                                    <field name="total" readonly="1"/>
-                                </list>
-                            </field>
-                        </page>
-                        <page string="Individual Labour" invisible="attendance_type != 'individual'">
-                            <field name="individual_line_ids">
-                                <list editable="bottom">
-                                    <field name="labour_id" domain="[('parent_id','!=',False)]"/>
-                                    <field name="category_id"/>
-                                    <field name="wage"/>
-                                    <field name="worked_hours" string="Hours"/>
-                                    <field name="ot_hours" readonly="1"/>
-                                    <field name="total" readonly="1"/>
-                                </list>
-                            </field>
-                        </page>
                         <page string="Photos">
                             <field name="photo_ids">
-                                <list editable="bottom">
+                                <tree editable="bottom">
                                     <field name="name"/>
                                     <field name="image_type"/>
                                     <field name="image" widget="image"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                     </notebook>
@@ -120,5 +104,4 @@
         <field name="res_model">site.labour.sheet</field>
         <field name="view_mode">list,form,graph,pivot</field>
     </record>
-
 </odoo>

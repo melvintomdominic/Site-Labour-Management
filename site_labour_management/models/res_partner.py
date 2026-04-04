@@ -1,11 +1,14 @@
 import base64
 from urllib import parse, request
 
-from odoo import models
+from odoo import fields, models
 
 
 class ResPartner(models.Model):
     _inherit = "res.partner"
+
+    is_labour = fields.Boolean(default=False)
+    is_team_leader = fields.Boolean(default=False)
 
     def _slm_send_whatsapp(self, message):
         param = self.env["ir.config_parameter"].sudo()
