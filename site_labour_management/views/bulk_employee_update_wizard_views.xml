@@ -1,0 +1,28 @@
+<odoo>
+    <record id="view_site_labour_bulk_employee_update_wizard" model="ir.ui.view">
+        <field name="name">site.labour.bulk.employee.update.wizard.form</field>
+        <field name="model">site.labour.bulk.employee.update.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Bulk Employee Wage/OT Update">
+                <group>
+                    <field name="analytic_account_id"/>
+                    <field name="work_date"/>
+                    <field name="employee_ids" widget="many2many_tags"/>
+                    <field name="wage_rate"/>
+                    <field name="ot_hours"/>
+                </group>
+                <footer>
+                    <button name="action_apply" type="object" string="Apply" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_site_labour_bulk_employee_update_wizard" model="ir.actions.act_window">
+        <field name="name">Bulk Employee Wage/OT Update</field>
+        <field name="res_model">site.labour.bulk.employee.update.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>
