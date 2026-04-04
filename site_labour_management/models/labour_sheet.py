@@ -8,7 +8,6 @@ from odoo.exceptions import UserError, ValidationError
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
-    mobile = fields.Char()
 
     def _slm_send_whatsapp(self, message):
         param = self.env["ir.config_parameter"].sudo()

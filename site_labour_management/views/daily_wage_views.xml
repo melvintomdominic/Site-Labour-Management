@@ -23,7 +23,7 @@
         <field name="name">site.labour.daily.wage.slip.tree</field>
         <field name="model">site.labour.daily.wage.slip</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" string="Sl No"/>
                 <field name="labour_id" string="Labour Name"/>
                 <field name="work_type"/>
@@ -43,7 +43,7 @@
                 <field name="remarks"/>
                 <field name="create_uid" string="Created By"/>
                 <field name="create_date" string="Created On"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -102,7 +102,7 @@
         <field name="name">site.labour.wage.payment.tree</field>
         <field name="model">site.labour.wage.payment</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="tr_id" string="TR ID"/>
                 <field name="paid_date"/>
                 <field name="labour_id" string="Labour Name"/>
@@ -115,7 +115,7 @@
                 <field name="remarks"/>
                 <field name="create_uid" string="Created By"/>
                 <field name="create_date" string="Created Date"/>
-            </tree>
+            </list>
         </field>
     </record>
 
