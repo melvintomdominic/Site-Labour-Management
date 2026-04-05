@@ -5,7 +5,7 @@
         <field name="arch" type="xml">
             <search>
                 <field name="date"/>
-                <field name="partner_id" domain="[('parent_id','=',False)]"/>
+                <field name="partner_id" domain="[('parent_id','=',False),('company_type','=','person')]"/>
                 <filter name="today" string="Today" domain="[('date','=',context_today())]"/>
             </search>
         </field>
@@ -18,7 +18,7 @@
             <list>
                 <field name="name"/>
                 <field name="date"/>
-                <field name="partner_id" domain="[('parent_id','=',False)]"/>
+                <field name="partner_id" domain="[('parent_id','=',False),('company_type','=','person')]"/>
                 <field name="analytic_account_id"/>
                 <field name="total_amount"/>
                 <field name="state"/>
@@ -41,7 +41,7 @@
                     <group>
                         <field name="name" readonly="1"/>
                         <field name="date"/>
-                        <field name="partner_id" domain="[('parent_id','=',False)]"/>
+                        <field name="partner_id" domain="[('parent_id','=',False),('company_type','=','person')]"/>
                         <field name="analytic_account_id" string="Project"/>
                         <field name="labour_sheet_ids" widget="many2many_tags"/>
                         <field name="move_id" readonly="1"/>

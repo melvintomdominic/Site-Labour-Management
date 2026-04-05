@@ -5,7 +5,7 @@
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
-                <field name="partner_id" domain="[('parent_id','=',False)]"/>
+                <field name="partner_id" domain="[('parent_id','=',False),('company_type','=','person')]"/>
                 <field name="week_start"/>
                 <field name="week_end"/>
                 <field name="analytic_account_id"/>
@@ -30,7 +30,7 @@
                 <sheet>
                     <group>
                         <field name="name" readonly="1"/>
-                        <field name="partner_id" domain="[('parent_id','=',False)]"/>
+                        <field name="partner_id" domain="[('parent_id','=',False),('company_type','=','person')]"/>
                         <field name="week_start"/>
                         <field name="week_end"/>
                         <field name="analytic_account_id"/>

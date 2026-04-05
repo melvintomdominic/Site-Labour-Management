@@ -9,7 +9,7 @@ class SiteLabourDailyBill(models.Model):
 
     name = fields.Char(default="New", readonly=True, copy=False)
     date = fields.Date(required=True, default=fields.Date.context_today)
-    partner_id = fields.Many2one("res.partner", required=True, domain=[("parent_id", "=", False)])
+    partner_id = fields.Many2one("res.partner", required=True, domain=[("parent_id", "=", False), ("company_type", "=", "person")])
     labour_sheet_ids = fields.Many2many("site.labour.sheet")
     line_ids = fields.One2many("site.labour.daily.bill.line", "bill_id")
     total_amount = fields.Monetary(compute="_compute_total_amount", store=True)

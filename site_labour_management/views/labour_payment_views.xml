@@ -34,7 +34,7 @@
                     </group>
                     <field name="line_ids">
                         <list editable="bottom">
-                            <field name="partner_id" domain="[('parent_id','=',False)]"/>
+                            <field name="partner_id" domain="[('parent_id','=',False),('company_type','=','person')]"/>
                             <field name="amount"/>
                         </list>
                     </field>
