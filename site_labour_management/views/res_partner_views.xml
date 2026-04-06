@@ -1,0 +1,15 @@
+<odoo>
+    <record id="view_partner_form_site_labour" model="ir.ui.view">
+        <field name="name">res.partner.form.site.labour</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet//group" position="inside">
+                <group string="Site Labour">
+                    <field name="is_labour"/>
+                    <field name="is_team_leader"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
